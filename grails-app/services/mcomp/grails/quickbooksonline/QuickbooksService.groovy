@@ -3,7 +3,7 @@ import org.scribe.model.Response
 import org.scribe.model.Token
 import uk.co.desirableobjects.oauth.scribe.OauthService
 
-class QuickbooksService {
+class QuickBooksService {
 
 	OauthService oauthService
 

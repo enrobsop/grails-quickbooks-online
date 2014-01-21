@@ -6,8 +6,8 @@ import org.scribe.model.Response
 import org.scribe.model.Token
 import uk.co.desirableobjects.oauth.scribe.OauthService
 
-@TestFor(QuickbooksService)
-class QuickbooksServiceSpec extends UnitSpec {
+@TestFor(QuickBooksService)
+class QuickBooksServiceSpec extends UnitSpec {
 
 	def "user can get the session key containing the access token"() {
 

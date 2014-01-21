@@ -10,8 +10,8 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 		given: "a controller"
 			def controller = new DummyController()
-			def quickbooksService = Mock(QuickbooksService)
-			controller.quickbooksService = quickbooksService
+			def quickBooksService = Mock(QuickBooksService)
+			controller.quickBooksService = quickBooksService
 		and: "a session"
 			def theToken = new Token("key","secret")
 			def session = [oauth_access_token: theToken]
@@ -21,7 +21,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			def result = controller.getToken()
 
 		then: "the correct calls are made"
-			1 * quickbooksService.getTokenSessionKey() >> "oauth_access_token"
+			1 * quickBooksService.getTokenSessionKey() >> "oauth_access_token"
 		and: "the correct token is returned"
 			result == theToken
 
@@ -31,8 +31,8 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 		given: "a controller"
 			def controller = new DummyController()
-			def quickbooksService = Mock(QuickbooksService)
-			controller.quickbooksService = quickbooksService
+			def quickBooksService = Mock(QuickBooksService)
+			controller.quickBooksService = quickBooksService
 		and: "a session"
 			def theToken = new Token("key","secret")
 			def session = [oauth_access_token: theToken]
@@ -47,9 +47,9 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			def result = controller.getJsonResponse(theUrl, theQuerystringParams)
 
 		then: "the token is requested implicitly"
-			1 * quickbooksService.getTokenSessionKey() >> "oauth_access_token"
+			1 * quickBooksService.getTokenSessionKey() >> "oauth_access_token"
 		and: "the mixin correctly delegates to the service"
-			1 * quickbooksService.getJsonResponse(theToken, theUrl, theQuerystringParams) >> expectedResponse
+			1 * quickBooksService.getJsonResponse(theToken, theUrl, theQuerystringParams) >> expectedResponse
 		and: "the response is correctly returned"
 			result == expectedResponse
 
@@ -58,7 +58,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 	@Mixin(QuickBooksControllerMixin)
 	class DummyController {
 
-		def quickbooksService
+		def quickBooksService
 		def session
 
 	}

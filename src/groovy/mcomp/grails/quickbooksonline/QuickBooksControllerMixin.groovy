@@ -6,11 +6,11 @@ import org.scribe.model.Token
 class QuickBooksControllerMixin {
 
 	protected Token getToken() {
-		session[quickbooksService.tokenSessionKey]
+		session[quickBooksService.tokenSessionKey]
 	}
 
 	protected Response getJsonResponse(url, querystringParams) {
-		quickbooksService.getJsonResponse(token, url, querystringParams)
+		quickBooksService.getJsonResponse(token, url, querystringParams)
 	}
 
 	protected void debug(Token theToken) {
