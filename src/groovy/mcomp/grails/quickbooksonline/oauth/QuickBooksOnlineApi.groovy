@@ -1,9 +1,9 @@
-package mcomp.grails.quickbooksonline
+package mcomp.grails.quickbooksonline.oauth
 
 import org.scribe.builder.api.DefaultApi10a
 import org.scribe.model.Token
 
-class QuickbooksOnlineApi extends DefaultApi10a {
+class QuickBooksOnlineApi extends DefaultApi10a {
 
 	@Override
 	String getRequestTokenEndpoint() {

@@ -10,14 +10,14 @@ Grails plugin for the QuickBooksOnline API.
 ## Configuration
 Add the following to `grails-app/config/Config.groovy`:
 ```groovy
-import mcomp.grails.quickbooksonline.QuickbooksOnlineApi
+import mcomp.grails.quickbooksonline.oauth.QuickBooksOnlineApi
 
 ...
 
 oauth {
 	providers {
 		intuit {
-			api     = QuickbooksOnlineApi
+			api     = QuickBooksOnlineApi
 			key     = "APP OAUTH CONSUMER KEY"
 			secret  = "APP OAUTH CONSUMER SECRET"
 			successUri  = '/success'
