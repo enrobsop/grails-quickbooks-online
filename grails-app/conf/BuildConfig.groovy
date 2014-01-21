@@ -2,6 +2,9 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
+def inlinePluginsDir = ".."
+grails.plugin.location.'oauth' = "${inlinePluginsDir}/grails-oauth-scribe" // Fork and clone: https://github.com/aiten/grails-oauth-scribe
+
 grails.project.dependency.resolution = {
 
 	inherits("global")
