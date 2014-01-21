@@ -32,7 +32,9 @@ grails.project.dependency.resolution = {
 			exclude 'spock-grails-support'
 		}
 
-		compile ":grails-oauth:2.4-SNAPSHOT"   // local zip
+		compile(":grails-oauth:2.4-SNAPSHOT") {
+			excludes 'spock', 'spock-core', 'objenesis','gmock'
+		}   // local zip
 
 	}
 
