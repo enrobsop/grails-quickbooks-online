@@ -13,6 +13,7 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
+		compile 'org.scribe:scribe:1.3.5'
 		test('org.spockframework:spock-grails-support:0.7-groovy-2.0') {
 			export = false
 		}
