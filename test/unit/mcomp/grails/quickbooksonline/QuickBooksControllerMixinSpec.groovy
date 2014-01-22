@@ -73,6 +73,18 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	}
 
+	def "the application should not throw an exception when getting a JsonResponse without any querystringParams"() {
+
+		given: "a session"
+			controller.session = [:]
+		when:
+			controller.getJsonResponse("http://somewhere")
+
+		then:
+			notThrown MissingMethodException
+
+	}
+
 	def "user can access session variables via convenient accessors aliases"() {
 
 		when: "a session"
