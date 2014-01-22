@@ -1,9 +1,8 @@
 language: groovy
 jdk:
-  - openjdk6
+  - oraclejdk7
 branches:
   only:
     - master
-script: ./grailsw clean
-      && ./grailsw refresh-dependencies
+script: ./grailsw refresh-dependencies
       && ./grailsw "test-app -unit --stacktrace"
