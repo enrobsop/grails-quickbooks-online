@@ -6,13 +6,18 @@ import org.scribe.model.Token
 
 class QuickBooksControllerMixinSpec extends UnitSpec {
 
+	static controller
+	static quickBooksService
+
+	def setup() {
+		controller = new DummyController()
+		quickBooksService = Mock(QuickBooksService)
+		controller.quickBooksService = quickBooksService
+	}
+
 	def "user can get the access token from the controller"() {
 
-		given: "a controller"
-			def controller = new DummyController()
-			def quickBooksService = Mock(QuickBooksService)
-			controller.quickBooksService = quickBooksService
-		and: "a session"
+		given: "a session"
 			def theToken = new Token("key","secret")
 			def session = [oauth_access_token: theToken]
 			controller.session = session
@@ -29,11 +34,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	def "user can get the request token from the controller"() {
 
-		given: "a controller"
-			def controller = new DummyController()
-			def quickBooksService = Mock(QuickBooksService)
-			controller.quickBooksService = quickBooksService
-		and: "a session"
+		given: "a session"
 			def theToken = new Token("key","secret")
 			def session = [oauth_request_token: theToken]
 			controller.session = session
@@ -50,11 +51,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	def "user can get a JSON response without explicitly providing a token"() {
 
-		given: "a controller"
-			def controller = new DummyController()
-			def quickBooksService = Mock(QuickBooksService)
-			controller.quickBooksService = quickBooksService
-		and: "a session"
+		given: "a session"
 			def theToken = new Token("key","secret")
 			def session = [oauth_access_token: theToken]
 			controller.session = session
