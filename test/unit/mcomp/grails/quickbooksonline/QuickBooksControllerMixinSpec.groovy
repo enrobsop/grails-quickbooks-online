@@ -151,7 +151,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 	def "user can submit a dynamic item read request like getJsonResponseForCustomer"() {
 
 		given: "params"
-			String theCustomerId = "789"
+			String theItemId = "789"
 		and: "a session"
 			def theToken = aToken()
 			configureSessionWith([
@@ -162,14 +162,14 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			def expectedResponse = Mock(Response)
 
 		when: "submitting a call to a dynamic method"
-			Response result = controller.getJsonResponseForCustomer(theCustomerId)
+			Response result = controller."getJsonResponseFor${type}"(theItemId)
 
 		then: "the method is found dynamically"
 			notThrown MissingMethodException
 		and: "the mixin correctly delegates to the service"
 			1 * quickBooksService.getJsonResponse(
 					theToken,
-					"http://the.base.url/company/12345678/customer",
+					"http://the.base.url/company/12345678/${type.toLowerCase()}/${theItemId}",
 					[:]
 			) >> expectedResponse
 		and: "the response is correctly returned"
