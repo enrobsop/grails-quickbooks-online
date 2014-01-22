@@ -73,6 +73,25 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	}
 
+	def "user can access session variables via convenient accessors aliases"() {
+
+		when: "a session"
+			controller.session = [
+				companyId:  "1234567890",
+				dataSource: "QBO",
+				provider:   "intuit"
+			]
+
+		then:
+			controller.companyId    == "1234567890"
+			controller.dataSource   == "QBO"
+			controller.provider     == "intuit"
+		and: "realmId is an alias for companyId"
+			controller.realmId == controller.companyId
+
+
+	}
+
 	@Mixin(QuickBooksControllerMixin)
 	class DummyController {
 

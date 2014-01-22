@@ -17,6 +17,22 @@ class QuickBooksControllerMixin {
 		quickBooksService.getJsonResponse(accessToken, url, querystringParams)
 	}
 
+	protected String getCompanyId() {
+		session.companyId
+	}
+
+	protected String getRealmId() {
+		companyId
+	}
+
+	protected String getDataSource() {
+		session.dataSource
+	}
+
+	protected String getProvider() {
+		session.provider
+	}
+
 	protected void debug(Token theToken) {
 		println """
 	Token:
