@@ -10,17 +10,17 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 	static quickBooksService
 
 	def setup() {
-		controller = new DummyController()
 		quickBooksService = Mock(QuickBooksService)
+		controller = new DummyController()
 		controller.quickBooksService = quickBooksService
+		controller.session = [:]
 	}
 
 	def "user can get the access token from the controller"() {
 
 		given: "a session"
-			def theToken = new Token("key","secret")
-			def session = [oauth_access_token: theToken]
-			controller.session = session
+			def theToken = aToken()
+			controller.session.oauth_access_token = theToken
 
 		when:
 			def result = controller.getAccessToken()
@@ -35,9 +35,8 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 	def "user can get the request token from the controller"() {
 
 		given: "a session"
-			def theToken = new Token("key","secret")
-			def session = [oauth_request_token: theToken]
-			controller.session = session
+			def theToken = aToken()
+			controller.session.oauth_request_token = theToken
 
 		when:
 			def result = controller.getRequestToken()
@@ -52,9 +51,8 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 	def "user can get a JSON response without explicitly providing a token"() {
 
 		given: "a session"
-			def theToken = new Token("key","secret")
-			def session = [oauth_access_token: theToken]
-			controller.session = session
+			def theToken = aToken()
+			controller.session.oauth_access_token = theToken
 		and: "params"
 			def theUrl = "http://someUrl/quickbooks/etc"
 			def theQuerystringParams = [query: "select something from something"]
@@ -75,8 +73,6 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	def "the application should not throw an exception when getting a JsonResponse without any querystringParams"() {
 
-		given: "a session"
-			controller.session = [:]
 		when:
 			controller.getJsonResponse("http://somewhere")
 
@@ -101,7 +97,10 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 		and: "realmId is an alias for companyId"
 			controller.realmId == controller.companyId
 
+	}
 
+	private Token aToken() {
+		new Token("key", "secret")
 	}
 
 	@Mixin(QuickBooksControllerMixin)
