@@ -41,7 +41,7 @@ If in doubt, test the callback, success and failure URLs using a browser.
 ```groovy
 quickbooksonline {
 	api {
-		baseurl = "https://qb.sbfinance.intuit.com/v3/"
+		baseurl = "https://qb.sbfinance.intuit.com/v3"
 	}
 }
 ```

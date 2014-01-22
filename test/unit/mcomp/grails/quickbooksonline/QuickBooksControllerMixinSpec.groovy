@@ -1,5 +1,4 @@
 package mcomp.grails.quickbooksonline
-
 import grails.plugin.spock.UnitSpec
 import org.scribe.model.Response
 import org.scribe.model.Token
@@ -96,6 +95,87 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			controller.provider     == "intuit"
 		and: "realmId is an alias for companyId"
 			controller.realmId == controller.companyId
+
+	}
+
+	def "user can get the baseUrl for the current company"() {
+
+		given: "a current company"
+			def theCompanyId = "1234567890"
+		and: "a session"
+			controller.session = [companyId:  theCompanyId]
+		and: "an expected url"
+			def expectedUrl = "http://the.base.url/company/$theCompanyId"
+
+		when:
+			def result = controller.baseUrl
+
+		then: "the controller correctly delegates"
+			1 * quickBooksService.getBaseUrlForCompany(theCompanyId) >> expectedUrl
+		and:
+			result == expectedUrl
+
+	}
+
+	def "user can submit a dynamic query like getJsonResponseForQuery"() {
+
+		given: "params"
+			String theQuery = "SELECT * FROM Customer"
+		and: "a session"
+			def theToken = aToken()
+			controller.session.oauth_access_token = theToken
+			controller.session.companyId = "1234567"
+		and: "a response"
+			def expectedResponse = Mock(Response)
+
+		when: "submitting a call to a dynamic method"
+			Response result = controller.getJsonResponseForQuery(theQuery)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the token is requested implicitly"
+			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
+		and: "the base url is requested"
+			1 * quickBooksService.getBaseUrlForCompany("1234567") >> "http://the.base.url/company/1234567"
+		and: "the mixin correctly delegates to the service"
+			1 * quickBooksService.getJsonResponse(
+					theToken,
+					"http://the.base.url/company/1234567/query",
+					[query: theQuery]
+			) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
+
+	}
+
+	def "user can submit a dynamic item request like getJsonResponseForCustomer"() {
+
+		given: "params"
+			String theCustomerId = "789"
+		and: "a session"
+			def theToken = aToken()
+			controller.session.oauth_access_token = theToken
+			controller.session.companyId = "12345678"
+		and: "a response"
+			def expectedResponse = Mock(Response)
+
+		when: "submitting a call to a dynamic method"
+			Response result = controller.getJsonResponseForCustomer(theCustomerId)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the token is requested implicitly"
+			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
+		and: "the base url is requested"
+			1 * quickBooksService.getBaseUrlForCompany("12345678") >> "http://the.base.url/company/12345678"
+		and: "the mixin correctly delegates to the service"
+			1 * quickBooksService.getJsonResponse(
+					theToken,
+					"http://the.base.url/company/12345678/customer",
+					[:]
+			) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
 
 	}
 
