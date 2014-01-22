@@ -6,7 +6,7 @@ import org.scribe.model.Token
 
 class QuickBooksControllerMixinSpec extends UnitSpec {
 
-	def "user can get the token from the controller"() {
+	def "user can get the access token from the controller"() {
 
 		given: "a controller"
 			def controller = new DummyController()
@@ -22,6 +22,27 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 		then: "the correct calls are made"
 			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
+		and: "the correct token is returned"
+			result == theToken
+
+	}
+
+	def "user can get the request token from the controller"() {
+
+		given: "a controller"
+			def controller = new DummyController()
+			def quickBooksService = Mock(QuickBooksService)
+			controller.quickBooksService = quickBooksService
+		and: "a session"
+			def theToken = new Token("key","secret")
+			def session = [oauth_request_token: theToken]
+			controller.session = session
+
+		when:
+			def result = controller.getRequestToken()
+
+		then: "the correct calls are made"
+			1 * quickBooksService.getSessionKeyForRequestToken() >> "oauth_request_token"
 		and: "the correct token is returned"
 			result == theToken
 

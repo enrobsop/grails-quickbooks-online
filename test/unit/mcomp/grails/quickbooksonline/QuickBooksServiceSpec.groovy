@@ -11,7 +11,7 @@ class QuickBooksServiceSpec extends UnitSpec {
 
 	def "user can get the session key containing the access token"() {
 
-		given: "args"
+		given:
 			OauthService oauthService = Mock(OauthService)
 			service.oauthService = oauthService
 
@@ -19,9 +19,25 @@ class QuickBooksServiceSpec extends UnitSpec {
 			def result = service.sessionKeyForAccessToken
 
 		then: "the service delegates correctly"
-			1 * oauthService.findSessionKeyForAccessToken("intuit") >> "theKey"
+			1 * oauthService.findSessionKeyForAccessToken("intuit") >> "theAccessTokenKey"
 		and: "the correct key is given"
-			result == "theKey"
+			result == "theAccessTokenKey"
+
+	}
+
+	def "user can get the session key containing the request token"() {
+
+		given:
+			OauthService oauthService = Mock(OauthService)
+			service.oauthService = oauthService
+
+		when:
+			def result = service.sessionKeyForRequestToken
+
+		then: "the service delegates correctly"
+			1 * oauthService.findSessionKeyForRequestToken("intuit") >> "theRequestTokenKey"
+		and: "the correct key is given"
+			result == "theRequestTokenKey"
 
 	}
 

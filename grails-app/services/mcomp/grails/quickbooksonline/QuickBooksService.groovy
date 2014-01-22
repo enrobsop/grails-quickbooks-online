@@ -11,6 +11,10 @@ class QuickBooksService {
 		oauthService.findSessionKeyForAccessToken('intuit')
 	}
 
+	String getSessionKeyForRequestToken() {
+		oauthService.findSessionKeyForRequestToken('intuit')
+	}
+
 	Response getJsonResponse(Token token, String url, Map<String,String> querystringParams) {
 		def extraHeaders = [Accept:"application/json", "Content-Type":"application/json"]
 		oauthService.getIntuitResourceWithQuerystringParams(token, url, querystringParams, extraHeaders)

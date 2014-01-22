@@ -9,6 +9,10 @@ class QuickBooksControllerMixin {
 		session[quickBooksService.sessionKeyForAccessToken]
 	}
 
+	protected Token getRequestToken() {
+		session[quickBooksService.sessionKeyForRequestToken]
+	}
+
 	protected Response getJsonResponse(url, querystringParams) {
 		quickBooksService.getJsonResponse(accessToken, url, querystringParams)
 	}
