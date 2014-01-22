@@ -2,6 +2,7 @@ package mcomp.grails.quickbooksonline
 import grails.plugin.spock.UnitSpec
 import org.scribe.model.Response
 import org.scribe.model.Token
+import spock.lang.Unroll
 
 class QuickBooksControllerMixinSpec extends UnitSpec {
 
@@ -146,7 +147,8 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	}
 
-	def "user can submit a dynamic item request like getJsonResponseForCustomer"() {
+	@Unroll("user can read a #type using getJsonResponseFor#type")
+	def "user can submit a dynamic item read request like getJsonResponseForCustomer"() {
 
 		given: "params"
 			String theCustomerId = "789"
@@ -172,6 +174,34 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			) >> expectedResponse
 		and: "the response is correctly returned"
 			result == expectedResponse
+
+		where:
+			type << ["Account",
+				"Attachable",
+				"Bill",
+				"BillPayment",
+				"Class",
+				"CompanyInfo",
+				"CreditMemo",
+				"Customer",
+				"Department",
+				"Estimate",
+				"Invoice",
+				"Item",
+				"JournalEntry",
+				"Payment",
+				"PaymentMethod",
+				"Preferences",
+				"Purchase",
+				"PurchaseOrder",
+				"SalesReceipt",
+				"TaxCode",
+				"TaxRate",
+				"Term",
+				"TimeActivity",
+				"Vendor",
+				"VendorCredit"
+			]
 
 	}
 
