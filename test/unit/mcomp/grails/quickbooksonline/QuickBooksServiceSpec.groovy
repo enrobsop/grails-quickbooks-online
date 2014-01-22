@@ -69,4 +69,31 @@ class QuickBooksServiceSpec extends UnitSpec {
 
 	}
 
+	def "user can get the base url"() {
+
+		when: "NO base url is configured"
+		then: "the base url returned is the default"
+			service.baseUrl == "https://qb.sbfinance.intuit.com/v3"
+		and: "the base url for a company is correct"
+			service.getBaseUrlForCompany("1234") == "https://qb.sbfinance.intuit.com/v3/company/1234"
+
+		when: "the base url IS configured"
+			grailsApplication.config.quickbooksonline.api.baseurl = "https://someurl/"
+		then: "the base url returned is the one configured minus any trailing '/'"
+			service.baseUrl == "https://someurl"
+		and: "the base url for a company is correct"
+			service.getBaseUrlForCompany("1234") == "https://someurl/company/1234"
+
+		when: "the base url has no trailing slash"
+			grailsApplication.config.quickbooksonline.api.baseurl = "https://no.trailing"
+		then: "the base url is unaltered"
+			service.baseUrl == "https://no.trailing"
+
+		when: "the base url has multiple trailing slashes"
+			grailsApplication.config.quickbooksonline.api.baseurl = "https://multi.trailing//"
+		then: "the base url is trimmed"
+			service.baseUrl == "https://multi.trailing"
+
+	}
+
 }

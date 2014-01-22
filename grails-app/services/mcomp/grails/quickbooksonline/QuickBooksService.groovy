@@ -7,6 +7,8 @@ class QuickBooksService {
 
 	OauthService oauthService
 
+	def grailsApplication
+
 	String getSessionKeyForAccessToken() {
 		oauthService.findSessionKeyForAccessToken('intuit')
 	}
@@ -18,6 +20,19 @@ class QuickBooksService {
 	Response getJsonResponse(Token token, String url, Map<String,String> querystringParams) {
 		def extraHeaders = [Accept:"application/json", "Content-Type":"application/json"]
 		oauthService.getIntuitResourceWithQuerystringParams(token, url, querystringParams, extraHeaders)
+	}
+
+	String getBaseUrl() {
+		def url = grailsApplication.config.quickbooksonline?.api?.baseurl ?: "https://qb.sbfinance.intuit.com/v3"
+		removeTrailingSlashes(url)
+	}
+
+	String getBaseUrlForCompany(String companyId) {
+		"${baseUrl}/company/${companyId}"
+	}
+
+	private def removeTrailingSlashes(def str) {
+		str.replaceAll(/\/+$/, "")
 	}
 
 }

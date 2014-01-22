@@ -37,3 +37,12 @@ An example callback URL is: `http://mytestapp.co.uk:8080/QuickbooksDemo1/oauth/i
 
 If in doubt, test the callback, success and failure URLs using a browser.
 
+### Additional Configuration
+```groovy
+quickbooksonline {
+	api {
+		baseurl = "https://qb.sbfinance.intuit.com/v3/"
+	}
+}
+```
+
