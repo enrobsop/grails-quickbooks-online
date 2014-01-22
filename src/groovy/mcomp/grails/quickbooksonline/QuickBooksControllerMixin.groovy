@@ -5,12 +5,12 @@ import org.scribe.model.Token
 
 class QuickBooksControllerMixin {
 
-	protected Token getToken() {
-		session[quickBooksService.tokenSessionKey]
+	protected Token getAccessToken() {
+		session[quickBooksService.sessionKeyForAccessToken]
 	}
 
 	protected Response getJsonResponse(url, querystringParams) {
-		quickBooksService.getJsonResponse(token, url, querystringParams)
+		quickBooksService.getJsonResponse(accessToken, url, querystringParams)
 	}
 
 	protected void debug(Token theToken) {

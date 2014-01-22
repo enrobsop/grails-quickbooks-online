@@ -16,7 +16,7 @@ class QuickBooksServiceSpec extends UnitSpec {
 			service.oauthService = oauthService
 
 		when:
-			def result = service.tokenSessionKey
+			def result = service.sessionKeyForAccessToken
 
 		then: "the service delegates correctly"
 			1 * oauthService.findSessionKeyForAccessToken("intuit") >> "theKey"

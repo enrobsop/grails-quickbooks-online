@@ -7,7 +7,7 @@ class QuickBooksService {
 
 	OauthService oauthService
 
-	String getTokenSessionKey() {
+	String getSessionKeyForAccessToken() {
 		oauthService.findSessionKeyForAccessToken('intuit')
 	}
 

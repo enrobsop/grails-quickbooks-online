@@ -18,10 +18,10 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			controller.session = session
 
 		when:
-			def result = controller.getToken()
+			def result = controller.getAccessToken()
 
 		then: "the correct calls are made"
-			1 * quickBooksService.getTokenSessionKey() >> "oauth_access_token"
+			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
 		and: "the correct token is returned"
 			result == theToken
 
@@ -47,7 +47,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			def result = controller.getJsonResponse(theUrl, theQuerystringParams)
 
 		then: "the token is requested implicitly"
-			1 * quickBooksService.getTokenSessionKey() >> "oauth_access_token"
+			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
 		and: "the mixin correctly delegates to the service"
 			1 * quickBooksService.getJsonResponse(theToken, theUrl, theQuerystringParams) >> expectedResponse
 		and: "the response is correctly returned"
