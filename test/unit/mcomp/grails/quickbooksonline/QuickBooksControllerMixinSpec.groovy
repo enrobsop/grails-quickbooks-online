@@ -123,8 +123,10 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			String theQuery = "SELECT * FROM Customer"
 		and: "a session"
 			def theToken = aToken()
-			controller.session.oauth_access_token = theToken
-			controller.session.companyId = "1234567"
+			configureSessionWith([
+				token:      theToken,
+				baseUrl:    "http://the.base.url/company/1234567"
+			])
 		and: "a response"
 			def expectedResponse = Mock(Response)
 
@@ -133,10 +135,6 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 		then: "the method is found dynamically"
 			notThrown MissingMethodException
-		and: "the token is requested implicitly"
-			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
-		and: "the base url is requested"
-			1 * quickBooksService.getBaseUrlForCompany("1234567") >> "http://the.base.url/company/1234567"
 		and: "the mixin correctly delegates to the service"
 			1 * quickBooksService.getJsonResponse(
 					theToken,
@@ -154,8 +152,10 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			String theCustomerId = "789"
 		and: "a session"
 			def theToken = aToken()
-			controller.session.oauth_access_token = theToken
-			controller.session.companyId = "12345678"
+			configureSessionWith([
+				token:      theToken,
+				baseUrl:    "http://the.base.url/company/12345678"
+			])
 		and: "a response"
 			def expectedResponse = Mock(Response)
 
@@ -164,10 +164,6 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 
 		then: "the method is found dynamically"
 			notThrown MissingMethodException
-		and: "the token is requested implicitly"
-			1 * quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
-		and: "the base url is requested"
-			1 * quickBooksService.getBaseUrlForCompany("12345678") >> "http://the.base.url/company/12345678"
 		and: "the mixin correctly delegates to the service"
 			1 * quickBooksService.getJsonResponse(
 					theToken,
@@ -177,6 +173,12 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 		and: "the response is correctly returned"
 			result == expectedResponse
 
+	}
+
+	private void configureSessionWith(props) {
+		controller.session.oauth_access_token = props.token
+		quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
+		quickBooksService.getBaseUrlForCompany(_) >> props.baseUrl
 	}
 
 	private Token aToken() {
