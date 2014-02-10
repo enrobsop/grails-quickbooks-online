@@ -3,6 +3,8 @@ import org.scribe.model.Response
 import org.scribe.model.Token
 import uk.co.desirableobjects.oauth.scribe.OauthService
 
+import static mcomp.grails.quickbooksonline.QuickBooksHelper.*
+
 class QuickBooksService {
 
 	OauthService oauthService
@@ -33,6 +35,32 @@ class QuickBooksService {
 
 	private def removeTrailingSlashes(def str) {
 		str.replaceAll(/\/+$/, "")
+	}
+
+	def methodMissing(String name, args) {
+		if( name ==~ GET_JSON_RESPONSE_FOR_PATTERN) {
+			def m       = name =~ GET_JSON_RESPONSE_FOR_PATTERN
+			def type    = m[0][1]
+
+			if (type == "Query" && args.size() == 3) {
+
+				def url                 = "${getBaseUrlForCompany(args[1])}/query"
+				def token               = args[0]
+				def querystringParams   = [query: args[2]]
+				return getJsonResponse(token, url, querystringParams)
+
+			} else if (args.size() == 3 && isQboType(type)) {
+
+				def itemId  = args[2]
+				def url     = "${getBaseUrlForCompany(args[1])}/${type.toLowerCase()}/${itemId}"
+				def token   = args[0]
+				return getJsonResponse(token, url, [:])
+
+			}
+
+		}
+
+		throw new MissingMethodException(name, getClass(), args)
 	}
 
 }

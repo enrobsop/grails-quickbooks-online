@@ -3,6 +3,8 @@ package mcomp.grails.quickbooksonline
 import org.scribe.model.Response
 import org.scribe.model.Token
 
+import static mcomp.grails.quickbooksonline.QuickBooksHelper.*
+
 class QuickBooksControllerMixin {
 
 	protected Token getAccessToken() {
@@ -39,8 +41,8 @@ class QuickBooksControllerMixin {
 
 	def methodMissing(String name, args) {
 
-		if( name ==~ /^getJsonResponseFor(\w+)/) {
-			def m       = name =~ /^getJsonResponseFor(\w+)/
+		if( name ==~ GET_JSON_RESPONSE_FOR_PATTERN) {
+			def m       = name =~ GET_JSON_RESPONSE_FOR_PATTERN
 			def type    = m[0][1]
 
 			if (type == "Query") {
@@ -49,7 +51,7 @@ class QuickBooksControllerMixin {
 				def querystringParams = args.size() > 0 ? [query: args[0]] : null
 				return getJsonResponse(url, querystringParams)
 
-			} else if (type in ["Account", "Attachable", "Bill", "BillPayment", "Class", "CompanyInfo", "CreditMemo", "Customer", "Department", "Estimate", "Invoice", "Item", "JournalEntry", "Payment", "PaymentMethod", "Preferences", "Purchase", "PurchaseOrder", "SalesReceipt", "TaxCode", "TaxRate", "Term", "TimeActivity", "Vendor", "VendorCredit"]) {
+			} else if (isQboType(type)) {
 
 				def itemId  = args.size() > 0 ? args[0] : ""
 				def url     = "${baseUrl}/${type.toLowerCase()}/${itemId}"

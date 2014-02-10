@@ -178,32 +178,7 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 			result == expectedResponse
 
 		where:
-			type << ["Account",
-				"Attachable",
-				"Bill",
-				"BillPayment",
-				"Class",
-				"CompanyInfo",
-				"CreditMemo",
-				"Customer",
-				"Department",
-				"Estimate",
-				"Invoice",
-				"Item",
-				"JournalEntry",
-				"Payment",
-				"PaymentMethod",
-				"Preferences",
-				"Purchase",
-				"PurchaseOrder",
-				"SalesReceipt",
-				"TaxCode",
-				"TaxRate",
-				"Term",
-				"TimeActivity",
-				"Vendor",
-				"VendorCredit"
-			]
+			type << QuickBooksHelper.allQboTypeNames
 
 	}
 

@@ -2,18 +2,25 @@ package mcomp.grails.quickbooksonline
 
 import grails.plugin.spock.UnitSpec
 import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
 import org.scribe.model.Response
 import org.scribe.model.Token
+import spock.lang.Unroll
 import uk.co.desirableobjects.oauth.scribe.OauthService
 
 @TestFor(QuickBooksService)
+@TestMixin(BuilderHelper)
 class QuickBooksServiceSpec extends UnitSpec {
 
-	def "user can get the session key containing the access token"() {
+	OauthService oauthService
 
-		given:
-			OauthService oauthService = Mock(OauthService)
-			service.oauthService = oauthService
+	def setup() {
+		oauthService = Mock(OauthService)
+		service.oauthService = oauthService
+		grailsApplication.config.quickbooksonline.api.baseurl = "https://qb.sbfinance.intuit.com/v3"
+	}
+
+	def "user can get the session key containing the access token"() {
 
 		when:
 			def result = service.sessionKeyForAccessToken
@@ -26,10 +33,6 @@ class QuickBooksServiceSpec extends UnitSpec {
 	}
 
 	def "user can get the session key containing the request token"() {
-
-		given:
-			OauthService oauthService = Mock(OauthService)
-			service.oauthService = oauthService
 
 		when:
 			def result = service.sessionKeyForRequestToken
@@ -48,9 +51,6 @@ class QuickBooksServiceSpec extends UnitSpec {
 			def theQuerystringParms = [query: "SELECT Id, DisplayName, Active, Balance FROM Customer"]
 		and: "an access token"
 			def theToken = new Token("token","secret")
-		and: "a service"
-			OauthService oauthService = Mock(OauthService)
-			service.oauthService = oauthService
 		and: "the expected response"
 			def expectedResponse = Mock(Response)
 
@@ -93,6 +93,70 @@ class QuickBooksServiceSpec extends UnitSpec {
 			grailsApplication.config.quickbooksonline.api.baseurl = "https://multi.trailing//"
 		then: "the base url is trimmed"
 			service.baseUrl == "https://multi.trailing"
+
+	}
+
+	def "user can submit a dynamic query like getJsonResponseForQuery"() {
+
+		given: "params"
+			String theQuery = "SELECT * FROM Customer"
+		and: "a session"
+			def theToken = aToken()
+		and: "a response"
+			def expectedResponse = Mock(Response)
+		and: "a companyId"
+			def theCompanyId = "123456789"
+
+		when: "submitting a call to a dynamic method"
+			Response result = service.getJsonResponseForQuery(theToken, theCompanyId, theQuery)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the mixin correctly delegates to the service"
+			1 * oauthService.methodMissing(
+				"getIntuitResourceWithQuerystringParams", {
+					assert it[0] == theToken
+					assert it[1] == "https://qb.sbfinance.intuit.com/v3/company/${theCompanyId}/query"
+					assert it[2] == [query: theQuery]
+					assert it[3].size() > 0
+					true
+			}) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
+
+	}
+
+	@Unroll("user can read a #type using getJsonResponseFor#type")
+	def "user can submit a dynamic item read request like getJsonResponseForCustomer"() {
+
+		given: "params"
+			String theItemId = "789"
+		and: "a session"
+			def theToken = aToken()
+		and: "a response"
+			def expectedResponse = Mock(Response)
+		and: "a company"
+			def theCompanyId = "123456789"
+
+		when: "submitting a call to a dynamic method"
+			Response result = service."getJsonResponseFor${type}"(theToken, theCompanyId, theItemId)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the mixin correctly delegates to the service"
+			1 * oauthService.methodMissing(
+				"getIntuitResourceWithQuerystringParams", {
+					assert it[0] == theToken
+					assert it[1] == "https://qb.sbfinance.intuit.com/v3/company/${theCompanyId}/${type.toLowerCase()}/${theItemId}"
+					assert it[2] == [:]
+					assert it[3].size() > 0
+					true
+				}) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
+
+		where:
+			type << QuickBooksHelper.allQboTypeNames
 
 	}
 
