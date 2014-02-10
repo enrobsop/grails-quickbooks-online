@@ -54,12 +54,11 @@ class QuickBooksService {
 			} else if (isQboType(type)) {
 				response = handleTypeLookup(type, args)
 			}
-		}
 
-		if (!response) {
-			throw new MissingMethodException(name, getClass(), args)
+			if (response) {
+				return response
+			}
 		}
-		response
 	}
 
 	private Response handleDynamicQuery(args) {

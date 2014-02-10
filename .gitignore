@@ -38,7 +38,7 @@
 
 # "temporary" build files
 target*/
-**/plugin.xml
+plugin.xml
 out/
 
 # other

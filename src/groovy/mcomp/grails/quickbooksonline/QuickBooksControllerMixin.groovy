@@ -61,7 +61,6 @@ class QuickBooksControllerMixin {
 
 		}
 
-		throw new MissingMethodException(name, getClass(), args)
 	}
 
 	protected void debug(Token theToken) {
