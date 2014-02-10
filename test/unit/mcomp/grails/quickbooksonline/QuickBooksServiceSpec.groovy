@@ -13,11 +13,14 @@ import uk.co.desirableobjects.oauth.scribe.OauthService
 class QuickBooksServiceSpec extends UnitSpec {
 
 	OauthService oauthService
+	def session
 
 	def setup() {
 		oauthService = Mock(OauthService)
 		service.oauthService = oauthService
 		grailsApplication.config.quickbooksonline.api.baseurl = "https://qb.sbfinance.intuit.com/v3"
+		session = [:]
+		service.userSession = session
 	}
 
 	def "user can get the session key containing the access token"() {
@@ -96,16 +99,14 @@ class QuickBooksServiceSpec extends UnitSpec {
 
 	}
 
-	def "user can submit a dynamic query like getJsonResponseForQuery"() {
+	def "user can submit a dynamic query like getJsonResponseForQuery using params"() {
 
 		given: "params"
 			String theQuery = "SELECT * FROM Customer"
-		and: "a session"
 			def theToken = aToken()
+			def theCompanyId = "123456789"
 		and: "a response"
 			def expectedResponse = Mock(Response)
-		and: "a companyId"
-			def theCompanyId = "123456789"
 
 		when: "submitting a call to a dynamic method"
 			Response result = service.getJsonResponseForQuery(theToken, theCompanyId, theQuery)
@@ -126,8 +127,41 @@ class QuickBooksServiceSpec extends UnitSpec {
 
 	}
 
+	def "user can submit a dynamic query like getJsonResponseForQuery using session values"() {
+
+		given: "params"
+			String theQuery = "SELECT * FROM Customer"
+		and: "a session"
+			def theToken        = aToken()
+			def theCompanyId    = "1234567"
+			configureSessionWith([
+				token:      theToken,
+				companyId:  theCompanyId
+			])
+		and: "a response"
+			def expectedResponse = Mock(Response)
+
+		when: "submitting a call to a dynamic method"
+			Response result = service.getJsonResponseForQuery(theQuery)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the mixin correctly delegates to the service"
+			1 * oauthService.methodMissing(
+				"getIntuitResourceWithQuerystringParams", {
+				assert it[0] == theToken
+				assert it[1] == "https://qb.sbfinance.intuit.com/v3/company/${theCompanyId}/query"
+				assert it[2] == [query: theQuery]
+				assert it[3].size() > 0
+				true
+			}) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
+
+	}
+
 	@Unroll("user can read a #type using getJsonResponseFor#type")
-	def "user can submit a dynamic item read request like getJsonResponseForCustomer"() {
+	def "user can submit a dynamic item read request like getJsonResponseForCustomer using params"() {
 
 		given: "params"
 			String theItemId = "789"
@@ -158,6 +192,51 @@ class QuickBooksServiceSpec extends UnitSpec {
 		where:
 			type << QuickBooksHelper.allQboTypeNames
 
+	}
+
+	@Unroll("user can read a #type using getJsonResponseFor#type")
+	def "user can submit a dynamic item read request like getJsonResponseForCustomer using values in the session"() {
+
+		given: "params"
+			String theItemId = "789"
+		and: "a session"
+			def theCompanyId = "123456789"
+			def theToken = aToken()
+			configureSessionWith([
+				token:      theToken,
+				companyId:  theCompanyId
+			])
+		and: "a response"
+			def expectedResponse = Mock(Response)
+
+		when: "submitting a call to a dynamic method"
+			Response result = service."getJsonResponseFor${type}"(theItemId)
+
+		then: "the method is found dynamically"
+			notThrown MissingMethodException
+		and: "the mixin correctly delegates to the service"
+			1 * oauthService.methodMissing(
+				"getIntuitResourceWithQuerystringParams", {
+				assert it[0] == theToken
+				assert it[1] == "https://qb.sbfinance.intuit.com/v3/company/${theCompanyId}/${type.toLowerCase()}/${theItemId}"
+				assert it[2] == [:]
+				assert it[3].size() > 0
+				true
+			}) >> expectedResponse
+		and: "the response is correctly returned"
+			result == expectedResponse
+
+		where:
+			type << QuickBooksHelper.allQboTypeNames
+
+	}
+
+	private void configureSessionWith(props) {
+		oauthService.findSessionKeyForAccessToken(_) >> "oauth_access_token"
+		session.with {
+			oauth_access_token  = props.token
+			companyId           = props.companyId
+		}
 	}
 
 }
