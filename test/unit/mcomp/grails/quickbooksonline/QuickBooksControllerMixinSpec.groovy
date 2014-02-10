@@ -1,9 +1,11 @@
 package mcomp.grails.quickbooksonline
+
 import grails.plugin.spock.UnitSpec
+import grails.test.mixin.TestMixin
 import org.scribe.model.Response
-import org.scribe.model.Token
 import spock.lang.Unroll
 
+@TestMixin(BuilderHelper)
 class QuickBooksControllerMixinSpec extends UnitSpec {
 
 	static controller
@@ -209,10 +211,6 @@ class QuickBooksControllerMixinSpec extends UnitSpec {
 		controller.session.oauth_access_token = props.token
 		quickBooksService.getSessionKeyForAccessToken() >> "oauth_access_token"
 		quickBooksService.getBaseUrlForCompany(_) >> props.baseUrl
-	}
-
-	private Token aToken() {
-		new Token("key", "secret")
 	}
 
 	@Mixin(QuickBooksControllerMixin)
