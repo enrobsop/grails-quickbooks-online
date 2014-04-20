@@ -1,12 +1,12 @@
 package mcomp.grails.quickbooksonline
+
 import org.scribe.model.Response
 import org.scribe.model.Token
 import org.springframework.web.context.request.RequestContextHolder
 import uk.co.desirableobjects.oauth.scribe.OauthService
 
-import javax.servlet.http.HttpSession
-
-import static mcomp.grails.quickbooksonline.QuickBooksHelper.*
+import static mcomp.grails.quickbooksonline.QuickBooksHelper.GET_JSON_RESPONSE_FOR_PATTERN
+import static mcomp.grails.quickbooksonline.QuickBooksHelper.isQboType
 
 class QuickBooksService {
 

@@ -1,3 +1,5 @@
+import mcomp.grails.quickbooksonline.QuickBooksSessionManager
+
 class QuickBooksOnlineGrailsPlugin {
 
 	def version = "0.1.2"
@@ -21,5 +23,11 @@ Grails plugin for integration with the QuickBooksOnline API.
 	def organization = [ name: "Paul Osborne", url: "http://www.paulosborne.me.uk/" ]
 	def issueManagement = [ system: "GitHub", url: "https://github.com/enrobsop/grails-quickbooks-online/issues" ]
 	def scm = [ url: "https://github.com/enrobsop/grails-quickbooks-online" ]
+
+	def doWithSpring = {
+		quickBooksSessionManager(QuickBooksSessionManager) {
+			quickBooksService = ref("quickBooksService")
+		}
+	}
 
 }

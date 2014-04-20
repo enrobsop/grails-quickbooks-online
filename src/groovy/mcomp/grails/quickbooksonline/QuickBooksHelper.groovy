@@ -1,8 +1,5 @@
 package mcomp.grails.quickbooksonline
 
-import java.util.regex.Pattern
-
-
 class QuickBooksHelper {
 
 	static final ALL_QBO_TYPE_NAMES = [

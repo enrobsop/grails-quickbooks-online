@@ -190,3 +190,98 @@ Response status: ${res?.code}
 </body>
 </html>
 ```
+
+## Persisting OAuth Details
+The plugin provides a Spring bean called `quickBooksSessionManager` which can be used to read and write the session variables required by QuickBooks Online. This means that it is possible to capture the configuration after successfully 'Authorizing' with QuickBooks Online and store the results so that authorisation is not required for future sessions.
+
+Please see the example domain and controller below.
+
+### Example Domain Class
+(In production systems, values should be encrypted/decrypted on save/load.)
+
+```groovy
+import mcomp.grails.quickbooksonline.QuickBooksSessionConfig
+import org.scribe.model.Token
+
+class QuickBooksSession {
+	
+	// Non-QBO field
+	String username
+
+  // QBO fields
+	String accessToken
+	String accessTokenSecret
+	String companyId
+	String dataSource
+	String provider
+
+	Date dateCreated
+	Date lastUpdated
+
+	QuickBooksSession() {}
+
+	QuickBooksSession(String username, QuickBooksSessionConfig config) {
+		this.username           = username
+		this.accessToken        = config.accessToken.token
+		this.accessTokenSecret  = config.accessToken.secret
+		this.companyId          = config.companyId
+		this.dataSource         = config.dataSource
+		this.provider           = config.provider
+	}
+
+	QuickBooksSessionConfig getQuickBooksSessionConfig() {
+		new QuickBooksSessionConfig(
+			accessToken:    new Token(accessToken, accessTokenSecret),
+			companyId:      companyId,
+			dataSource:     dataSource,
+			provider:       provider
+		)
+	}
+
+}
+```
+
+### Example Controller Class
+```groovy
+
+import grails.plugin.springsecurity.SpringSecurityService
+import mcomp.grails.quickbooksonline.QuickBooksSessionConfig
+import mcomp.grails.quickbooksonline.QuickBooksSessionManager
+
+class QuickBooksSessionController {
+
+	static scaffold = true
+
+	SpringSecurityService       springSecurityService
+	QuickBooksSessionManager    quickBooksSessionManager
+
+	def saveSession() {
+		QuickBooksSessionConfig config = quickBooksSessionManager.getSessionConfig(session)
+		String username = springSecurityService.principal.username
+		def qboSession = new QuickBooksSession(username, config)
+		if (qboSession.save(flush: true)) {
+			flash.message = "Successfully saved QuickBooks Online session."
+		} else {
+			flash.message = "Failed to save QuickBooks Online session."
+			log.warn "Failed to save QuickBooks session. Errors: ${qboSession.errors}"
+		}
+		redirect(action: "list")
+	}
+
+	def loadSession(String username) {
+		def qboSession = QuickBooksSession.findByUsername(username)
+		if (!qboSession) {
+			flash.message = "No quickbooks session found for $username."
+			redirect(action: "list")
+			return
+		} else {
+			quickBooksSessionManager.initSession(session, qboSession.quickBooksSessionConfig)
+			flash.message = "Loaded existing session for $username."
+		}
+		redirect(controller: "home")
+	}
+
+}
+```
+
+
