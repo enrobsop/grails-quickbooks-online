@@ -2,7 +2,7 @@ import mcomp.grails.quickbooksonline.QuickBooksSessionManager
 
 class QuickBooksOnlineGrailsPlugin {
 
-	def version = "0.2.0"
+	def version = "0.2.1"
 	def grailsVersion = "2.0 > *"
 	def pluginExcludes = [
 			"grails-app/domain/**",
