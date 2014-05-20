@@ -3,6 +3,13 @@ grails-quickbooks-online [![Build Status](https://travis-ci.org/enrobsop/grails-
 
 Grails plugin for the QuickBooksOnline API. This plugin includes an OAuth provider and utilities for working with the QuickBooks Online API.
 
+## Contents
+* [Pre-requisites](https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md#pre-requisites)
+* [Installation](https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md#installation)
+* [Configuration](https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md#configuration)
+* [Usage](https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md#usage)
+* [Persisting OAuth Details](https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md#persisting-oauth-details)
+
 ## Pre-requisites
 1. You have signed-up to the Intuit Partner Platform (IPP) at https://developer.intuit.com/.
 2. You have created a new QuickBooks API app in https://developer.intuit.com/.
