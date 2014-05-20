@@ -25,10 +25,12 @@ plugins {
 *Note that the version (1.0 in the example above) should be changed to reflect the version you would like to use.*
 
 #### Dependencies
-This plugin depends on:
-1. [Grails Oauth plugin](http://grails.org/plugin/oauth) >= 2.5
+This plugin depends on [Grails Oauth plugin](http://grails.org/plugin/oauth) (>= 2.5).
 
-Depending on how you install the plugin you might need the following in your `BuildConfig.groovy` file:
+The OAuth 2.5 plugin requires Scribe 1.3.6 which is not currently available via Maven. A *workaround* for this is to force the use of Scribe 1.3.5 instead.
+
+The `BuildConfig.groovy` should be as follows:
+
 ```groovy
 	repositories {
 		...
@@ -36,10 +38,17 @@ Depending on how you install the plugin you might need the following in your `Bu
 		...
 	}
 
-  ...
+	dependencies {
+  	...
+		runtime "org.scribe:scribe:1.3.5"
+		...
+	}
+
 	plugins {
 		...
-    	compile ":oauth:2.5"
+		compile (":oauth:2.5") {
+			exclude "scribe"  // Ignore the version of scribe defined by the plugin
+	  }
 		...
 	}
 ``` 
