@@ -14,10 +14,7 @@ class QuickBooksOnlineGrailsPlugin {
 	def title = "Quick Books Online Plugin"
 	def author = "Paul Osborne"
 	def authorEmail = "hello@paulosborne.me.uk"
-	def description = '''\
-Grails plugin for integration with the QuickBooks Online API.
-'''
-
+	def description = 'Grails plugin for integration with the QuickBooks Online API.'
 	def documentation = "https://github.com/enrobsop/grails-quickbooks-online/blob/master/README.md"
 	def license = "APACHE"
 	def organization = [ name: "Paul Osborne", url: "http://www.paulosborne.me.uk/" ]
